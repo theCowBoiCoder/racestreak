@@ -1,4 +1,21 @@
 services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: racestreak
+      POSTGRES_USER: racestreak
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-racestreak-local}
+    ports:
+      - "${DB_PORT_FORWARD:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U racestreak -d racestreak"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
   backend:
     build:
       context: .
@@ -15,10 +32,18 @@ services:
       SESSION_DRIVER: array
       CACHE_STORE: array
       QUEUE_CONNECTION: sync
-      DB_CONNECTION: sqlite
-      DB_DATABASE: /tmp/racestreak.sqlite
+      DB_CONNECTION: pgsql
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: racestreak
+      DB_USERNAME: racestreak
+      DB_PASSWORD: ${DB_PASSWORD:-racestreak-local}
+    command: ["sh", "-lc", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
     ports:
       - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8000/api/v1/health') === false ? 1 : 0);"]
       interval: 5s
@@ -37,3 +62,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+
+volumes:
+  postgres-data:

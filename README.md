@@ -6,6 +6,7 @@ This repository currently contains the PF-001 platform foundation:
 
 - Laravel API in `backend/`
 - Nuxt web application in `frontend/`
+- PostgreSQL database
 - Docker Compose stack for consistent local execution
 
 ## Prerequisites
@@ -28,10 +29,24 @@ Once both services are healthy:
 
 Stop the stack with `docker compose down`.
 
+PostgreSQL data is retained in the `postgres-data` Docker volume. Use `docker compose down -v` only when you intentionally want to delete the local database and start again from empty migrations.
+
+## Database commands
+
+```sh
+docker compose exec backend php artisan db:check
+docker compose exec backend php artisan migrate:status
+docker compose exec backend php artisan migrate
+docker compose exec backend php artisan migrate:rollback
+docker compose exec backend php artisan db:seed
+```
+
+The checked-in database password is a local-only Docker default. Set `DB_PASSWORD` before starting Compose to override it; never reuse the local value in a deployed environment.
+
 ## Run the backend tests
 
 ```sh
-docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null backend php artisan test
+docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: backend php artisan test
 ```
 
 ## Run the frontend tests

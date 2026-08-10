@@ -27,7 +27,21 @@ Successful responses use `{ "success": true, "data": { ... } }`. API failures us
 From the repository root:
 
 ```sh
-docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null backend php artisan test
+docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: backend php artisan test
 ```
 
 The test environment uses SQLite and does not require an external database service.
+
+## Database commands
+
+The Docker stack uses PostgreSQL. From the repository root:
+
+```sh
+docker compose exec backend php artisan db:check
+docker compose exec backend php artisan migrate:status
+docker compose exec backend php artisan migrate
+docker compose exec backend php artisan migrate:rollback
+docker compose exec backend php artisan db:seed
+```
+
+Automated tests always use an isolated in-memory SQLite database. Migration and seeding conventions are documented in `database/README.md`.
