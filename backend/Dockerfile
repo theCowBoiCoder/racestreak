@@ -12,8 +12,8 @@ RUN APP_NAME=RaceStreak \
 
 FROM php:8.4-cli-alpine
 
-RUN apk add --no-cache icu-dev oniguruma-dev \
-    && docker-php-ext-install intl mbstring pcntl
+RUN apk add --no-cache icu-dev libpq-dev oniguruma-dev \
+    && docker-php-ext-install intl mbstring pcntl pdo_pgsql
 
 WORKDIR /var/www/html
 
