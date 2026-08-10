@@ -69,6 +69,7 @@ docker compose up --build
 Once both services are healthy:
 
 - Nuxt frontend: <http://localhost:3000>
+- Driver registration: <http://localhost:3000/register>
 - Laravel API health: <http://localhost:8000/api/v1/health>
 - Laravel API version: <http://localhost:8000/api/v1/version>
 

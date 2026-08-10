@@ -1,6 +1,6 @@
 # RaceStreak API
 
-The RaceStreak API is a Laravel application. PF-001 establishes the versioned API, health and version endpoints, safe JSON error responses, required configuration validation, and automated endpoint tests.
+The RaceStreak API is a Laravel application. It provides the versioned API, safe JSON responses, configuration validation, health monitoring and driver-account capabilities.
 
 ## Required configuration
 
@@ -17,10 +17,13 @@ Do not commit `.env` or real application keys.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
+| `POST` | `/api/v1/driver-accounts` | Register a driver account |
 | `GET` | `/api/v1/health` | Application health, name and version |
 | `GET` | `/api/v1/version` | Current API/application version |
 
 Successful responses use `{ "success": true, "data": { ... } }`. API failures use `{ "success": false, "error": { "code": "...", "message": "..." } }`.
+
+Registration accepts `display_name`, `email`, `password` and `password_confirmation`. The password policy, rate limit and full response contract are documented in the [API v1 standards](../docs/api/v1/standards.md).
 
 ## Run tests
 

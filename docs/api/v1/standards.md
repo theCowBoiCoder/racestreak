@@ -178,6 +178,40 @@ Validation errors use status `422`, code `VALIDATION_ERROR`, and a `details.fiel
 
 ## Current endpoint examples
 
+### Driver registration
+
+`POST /api/v1/driver-accounts` is public and accepts:
+
+```json
+{
+  "display_name": "Apex Driver",
+  "email": "driver@example.test",
+  "password": "a password meeting the policy",
+  "password_confirmation": "the same password"
+}
+```
+
+Passwords require at least 12 characters with upper and lower case, a number and a symbol. Email addresses are trimmed, normalized to lowercase and unique. Successful registration returns `201 Created`, a `Location` header and the safe driver-account resource; it never returns the password, hash or internal database ID.
+
+Registration is limited to five attempts per minute for the submitted email and network address. A rejected attempt returns the standard `429` envelope with `Retry-After` and `RateLimit-*` fields.
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "0198f42c-5a75-7a4f-ae19-4c44225bc2c7",
+    "display_name": "Apex Driver",
+    "email": "driver@example.test",
+    "email_verified": false,
+    "created_at": "2026-08-10T13:30:00Z"
+  }
+}
+```
+
+Authentication is intentionally not created by registration and is introduced by DA-002.
+
+### Platform health
+
 `GET /api/v1/health` is public and returns:
 
 ```json
