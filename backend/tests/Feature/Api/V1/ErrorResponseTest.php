@@ -10,8 +10,10 @@ class ErrorResponseTest extends TestCase
 {
     public function test_unknown_api_routes_return_the_standard_error_format(): void
     {
-        $this->getJson('/api/v1/does-not-exist')
+        $this->withHeader('X-Request-ID', 'not-found-request')
+            ->getJson('/api/v1/does-not-exist')
             ->assertNotFound()
+            ->assertHeader('X-Request-ID', 'not-found-request')
             ->assertExactJson([
                 'success' => false,
                 'error' => [
@@ -41,8 +43,10 @@ class ErrorResponseTest extends TestCase
 
     public function test_unsupported_methods_return_the_standard_error_format(): void
     {
-        $this->postJson('/api/v1/health')
+        $this->withHeader('X-Request-ID', 'method-not-allowed-request')
+            ->postJson('/api/v1/health')
             ->assertMethodNotAllowed()
+            ->assertHeader('X-Request-ID', 'method-not-allowed-request')
             ->assertExactJson([
                 'success' => false,
                 'error' => [

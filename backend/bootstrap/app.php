@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Middleware\RequestContext;
+use App\Support\RequestFailureLogger;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -17,9 +21,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->prepend(RequestContext::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->report(function (Throwable $exception): bool {
+            $request = app()->bound('request') ? request() : null;
+
+            if (! $request instanceof Request || ! $request->is('api/*')) {
+                Log::error('application.exception', [
+                    'exception_class' => $exception::class,
+                ]);
+            }
+
+            return false;
+        });
+
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
@@ -74,5 +90,25 @@ return Application::configure(basePath: dirname(__DIR__))
                 'success' => false,
                 'error' => $error,
             ], $status);
+        });
+
+        $exceptions->respond(function (Response $response, Throwable $exception, Request $request): Response {
+            if (! $request->is('api/*')) {
+                return $response;
+            }
+
+            $requestId = $request->attributes->get(RequestContext::ATTRIBUTE);
+
+            if (is_string($requestId)) {
+                $response->headers->set(RequestContext::HEADER, $requestId);
+            }
+
+            app(RequestFailureLogger::class)->log(
+                $request,
+                $response->getStatusCode(),
+                $exception,
+            );
+
+            return $response;
         });
     })->create();
