@@ -90,6 +90,8 @@ Run `.\scripts\dev.ps1 quality` on Windows or `./scripts/dev.sh quality` on macO
 
 Every pull request and push to `main` is also checked automatically by GitHub Actions. The pipeline validates backend and frontend quality, tests, PostgreSQL migrations and the production Nuxt build. See [Continuous integration](docs/ci.md) for the required checks and troubleshooting guidance.
 
+Backend logs are structured JSON with application, version and request correlation context. The readiness endpoint checks PostgreSQL and reports dependency failures without exposing connection details. See [Logging and monitoring](docs/logging-and-monitoring.md) for event fields, sensitive-data rules and health-check operations.
+
 ## Configuration
 
 Docker Compose supplies safe local defaults. Copy the root `.env.example` to `.env` only when you need to override the database password or forwarded port. When running either application outside Docker, copy its own `.env.example` and adjust it locally.
