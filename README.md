@@ -2,7 +2,7 @@
 
 RaceStreak is a rewards, progression and engagement platform for community sim racing. Every race counts.
 
-This repository currently contains the PF-001 platform foundation:
+This repository contains the RaceStreak platform foundation:
 
 - Laravel API in `backend/`
 - Nuxt web application in `frontend/`
@@ -15,7 +15,41 @@ This repository currently contains the PF-001 platform foundation:
 
 No host installation of PHP, Composer, Node.js or npm is required to run the containerized stack.
 
-## Start RaceStreak
+## Clean-clone setup
+
+Clone the repository and enter it:
+
+```sh
+git clone https://github.com/theCowBoiCoder/racestreak.git
+cd racestreak
+```
+
+Start Docker Desktop, then use the helper for your operating system:
+
+```powershell
+.\scripts\dev.ps1 start
+```
+
+```sh
+./scripts/dev.sh start
+```
+
+The first start builds every image, creates PostgreSQL, runs pending migrations and starts the Laravel and Nuxt applications. No host installation of PHP, Composer, Node.js, npm or PostgreSQL is required.
+
+## Development commands
+
+| Action | PowerShell | macOS/Linux |
+| --- | --- | --- |
+| Start or rebuild | `.\scripts\dev.ps1 start` | `./scripts/dev.sh start` |
+| Show service status | `.\scripts\dev.ps1 status` | `./scripts/dev.sh status` |
+| Follow service logs | `.\scripts\dev.ps1 logs` | `./scripts/dev.sh logs` |
+| Run all tests | `.\scripts\dev.ps1 test` | `./scripts/dev.sh test` |
+| Stop services | `.\scripts\dev.ps1 stop` | `./scripts/dev.sh stop` |
+| Delete local data and start fresh | `.\scripts\dev.ps1 reset -Force` | `./scripts/dev.sh reset --yes` |
+
+The reset command permanently deletes the local PostgreSQL Docker volume. Normal stop/start commands preserve it.
+
+## Application URLs
 
 ```sh
 docker compose up --build
@@ -27,9 +61,7 @@ Once both services are healthy:
 - Laravel API health: <http://localhost:8000/api/v1/health>
 - Laravel API version: <http://localhost:8000/api/v1/version>
 
-Stop the stack with `docker compose down`.
-
-PostgreSQL data is retained in the `postgres-data` Docker volume. Use `docker compose down -v` only when you intentionally want to delete the local database and start again from empty migrations.
+PostgreSQL is available to local database clients at `localhost:5432` by default.
 
 ## Database commands
 
@@ -43,21 +75,16 @@ docker compose exec backend php artisan db:seed
 
 The checked-in database password is a local-only Docker default. Set `DB_PASSWORD` before starting Compose to override it; never reuse the local value in a deployed environment.
 
-## Run the backend tests
+## Run tests directly
 
 ```sh
-docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: backend php artisan test
-```
-
-## Run the frontend tests
-
-```sh
-docker run --rm -v "${PWD}/frontend:/app" -w /app node:22-alpine sh -lc "npm install --global npm@11 && npm ci && npm test"
+docker compose --profile tools run --rm backend-test
+docker compose --profile tools run --rm frontend-test
 ```
 
 ## Configuration
 
-Docker Compose supplies the required development values. When running either application outside Docker, copy the relevant `.env.example` file and adjust it locally.
+Docker Compose supplies safe local defaults. Copy the root `.env.example` to `.env` only when you need to override the database password or forwarded port. When running either application outside Docker, copy its own `.env.example` and adjust it locally.
 
 Laravel validates `APP_NAME`, `APP_VERSION`, `APP_TIMEZONE` and `APP_URL` during startup. Missing values produce a configuration error naming the missing variable without displaying secret values.
 

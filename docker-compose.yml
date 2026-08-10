@@ -63,5 +63,34 @@ services:
       backend:
         condition: service_healthy
 
+  backend-test:
+    profiles: ["tools"]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      APP_NAME: RaceStreak
+      APP_VERSION: 0.1.0
+      APP_ENV: testing
+      APP_KEY: base64:cmFjZXN0cmVhay1sb2NhbC1kZXZlbG9wbWVudC1rZXk=
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8000
+      APP_TIMEZONE: UTC
+      LOG_CHANNEL: "null"
+      SESSION_DRIVER: array
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
+    command: ["php", "artisan", "test"]
+
+  frontend-test:
+    profiles: ["tools"]
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: test
+    command: ["npm", "test"]
+
 volumes:
   postgres-data:
