@@ -70,6 +70,8 @@ Once both services are healthy:
 
 - Nuxt frontend: <http://localhost:3000>
 - Driver registration: <http://localhost:3000/register>
+- Driver sign in: <http://localhost:3000/login>
+- Authenticated account: <http://localhost:3000/account>
 - Laravel API health: <http://localhost:8000/api/v1/health>
 - Laravel API version: <http://localhost:8000/api/v1/version>
 

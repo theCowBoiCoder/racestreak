@@ -33,6 +33,7 @@ Use HTTP methods according to their standard semantics. `GET` reads, `POST` crea
 | `404 Not Found` | Resource or route is not visible to the caller |
 | `405 Method Not Allowed` | Path exists but does not support the method |
 | `409 Conflict` | Request conflicts with current resource state |
+| `419 Authentication Timeout` | Missing or expired CSRF token for a stateful request |
 | `422 Unprocessable Content` | Syntactically valid request fails field validation |
 | `429 Too Many Requests` | Rate limit exceeded |
 | `500 Internal Server Error` | Unexpected server failure |
@@ -102,6 +103,7 @@ The platform-wide codes are:
 | `404` | `NOT_FOUND` |
 | `405` | `METHOD_NOT_ALLOWED` |
 | `409` | `CONFLICT` |
+| `419` | `CSRF_TOKEN_MISMATCH` |
 | `422` | `VALIDATION_ERROR` |
 | `429` | `RATE_LIMIT_EXCEEDED` |
 | `500` | `INTERNAL_ERROR` |
@@ -157,11 +159,13 @@ Validation errors use status `422`, code `VALIDATION_ERROR`, and a `details.fiel
 
 ## Authentication and authorisation
 
-- Protected endpoints accept `Authorization: Bearer <token>` over HTTPS.
-- Authentication failures use `401` and include `WWW-Authenticate: Bearer` where appropriate.
+- The first-party Nuxt application uses Laravel's database-backed session authentication through same-origin Nuxt server routes. The architecture is recorded in [ADR-0002](../../architecture/decisions/0002-nuxt-proxied-laravel-sessions.md).
+- Protected endpoints require the opaque HTTP-only session cookie. Nuxt forwards it to Laravel; browser JavaScript never reads session contents or a bearer token.
+- Login and logout require a CSRF token obtained from `GET /api/v1/authentication/csrf-token`. A missing or expired token returns `419` with code `CSRF_TOKEN_MISMATCH`.
+- Authentication failures use `401`. Missing or expired sessions use `UNAUTHENTICATED`; failed login uses the non-enumerating `INVALID_CREDENTIALS` code.
 - Authorisation failures use `403`. Use `404` instead when revealing that a resource exists would leak information.
-- Never accept tokens in URLs or return credentials, token values or secret material in responses or logs.
-- Public endpoints must be explicitly documented as public. Authentication implementation is outside PF-005.
+- Never accept credentials in URLs or return passwords, cookies, session data or secret material in responses or logs.
+- Public endpoints must be explicitly documented as public.
 
 ## Request IDs
 
@@ -208,7 +212,31 @@ Registration is limited to five attempts per minute for the submitted email and 
 }
 ```
 
-Authentication is intentionally not created by registration and is introduced by DA-002.
+Registration does not sign the driver in automatically.
+
+### Driver authentication
+
+The first-party session flow uses these endpoints:
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/api/v1/authentication/csrf-token` | Public | Start or refresh the CSRF-protected session handshake |
+| `POST` | `/api/v1/authentication/session` | Public with CSRF | Validate credentials and create an authenticated session |
+| `GET` | `/api/v1/authentication/session` | Authenticated | Return the current safe driver-account resource |
+| `DELETE` | `/api/v1/authentication/session` | Authenticated with CSRF | Invalidate the active session |
+
+Login accepts `email` and `password`. Email addresses are trimmed and normalized to lowercase. Unknown accounts and incorrect passwords return the same `401 INVALID_CREDENTIALS` response. Five failed attempts per submitted email and network address are allowed per minute; the next attempt returns the standard `429` response. Successful authentication clears that failure counter and regenerates the session identifier.
+
+The current-account and login responses use the same safe driver-account representation as registration. Logout invalidates the active session and returns:
+
+```json
+{
+  "success": true,
+  "data": {
+    "message": "Signed out."
+  }
+}
+```
 
 ### Platform health
 

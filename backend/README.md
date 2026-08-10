@@ -18,12 +18,18 @@ Do not commit `.env` or real application keys.
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | `POST` | `/api/v1/driver-accounts` | Register a driver account |
+| `GET` | `/api/v1/authentication/csrf-token` | Start the authentication CSRF handshake |
+| `POST` | `/api/v1/authentication/session` | Sign in |
+| `GET` | `/api/v1/authentication/session` | Read the current authenticated account |
+| `DELETE` | `/api/v1/authentication/session` | Sign out |
 | `GET` | `/api/v1/health` | Application health, name and version |
 | `GET` | `/api/v1/version` | Current API/application version |
 
 Successful responses use `{ "success": true, "data": { ... } }`. API failures use `{ "success": false, "error": { "code": "...", "message": "..." } }`.
 
 Registration accepts `display_name`, `email`, `password` and `password_confirmation`. The password policy, rate limit and full response contract are documented in the [API v1 standards](../docs/api/v1/standards.md).
+
+Browser authentication uses database-backed Laravel sessions through the Nuxt server proxy. Login and logout are CSRF protected, failed login attempts are rate limited, and session responses return only the safe driver-account resource. See [ADR-0002](../docs/architecture/decisions/0002-nuxt-proxied-laravel-sessions.md).
 
 ## Run tests
 

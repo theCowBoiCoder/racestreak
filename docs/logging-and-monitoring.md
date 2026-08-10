@@ -23,6 +23,10 @@ Use the response request ID to correlate a user-visible failure with backend log
 | `health.dependency_failed` | `warning` | dependency name and exception class |
 | `health.dependency_not_supported` | `error` | configured dependency name |
 | `application.exception` | `error` | exception class for failures outside API requests |
+| `auth.login_succeeded` | `info` | driver account public ID |
+| `auth.login_failed` | `warning` | one-way email fingerprint |
+| `auth.login_rate_limited` | `warning` | one-way email fingerprint |
+| `auth.logout_succeeded` | `info` | driver account public ID |
 
 Local and test environments default to the `debug` threshold. Production defaults to `info`. Set `LOG_LEVEL` to override the threshold and `LOG_CHANNEL` to select another Laravel channel. Docker uses the structured `stderr` channel; automated tests use the `null` channel unless a test is explicitly inspecting logs.
 
