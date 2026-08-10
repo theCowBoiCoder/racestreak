@@ -34,6 +34,12 @@ Stop the stack with `docker compose down`.
 docker compose run --rm -e APP_ENV=testing -e LOG_CHANNEL=null backend php artisan test
 ```
 
+## Run the frontend tests
+
+```sh
+docker run --rm -v "${PWD}/frontend:/app" -w /app node:22-alpine sh -lc "npm install --global npm@11 && npm ci && npm test"
+```
+
 ## Configuration
 
 Docker Compose supplies the required development values. When running either application outside Docker, copy the relevant `.env.example` file and adjust it locally.
