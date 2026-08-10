@@ -7,7 +7,10 @@
 
       <HealthStatus />
 
-      <NuxtLink class="primary-link" to="/register">Create your driver account</NuxtLink>
+      <nav aria-label="Account actions">
+        <NuxtLink class="primary-link" to="/register">Create your driver account</NuxtLink>
+        <NuxtLink class="secondary-link" to="/login">Sign in</NuxtLink>
+      </nav>
     </section>
   </main>
 </template>
@@ -22,5 +25,12 @@
   color: #fff;
   font-weight: 800;
   text-decoration: none;
+}
+
+.secondary-link {
+  display: inline-block;
+  margin: 1.25rem 0 0 0.75rem;
+  color: #ff8a73;
+  font-weight: 750;
 }
 </style>

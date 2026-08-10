@@ -27,3 +27,4 @@ Accepted ADRs are immutable historical records. If a choice changes, add a new A
 | ADR | Status | Decision |
 | --- | --- | --- |
 | [0001](0001-docker-first-modular-monorepo.md) | Accepted | Use a Docker-first modular monorepo |
+| [0002](0002-nuxt-proxied-laravel-sessions.md) | Accepted | Use Nuxt-proxied Laravel sessions for browser authentication |

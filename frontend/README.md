@@ -25,4 +25,6 @@ The initial routed status page includes loading, healthy, empty and error states
 
 The `/register` page creates driver accounts through the Nuxt `/api/driver-accounts` server route. The proxy keeps the Laravel service address server-side while preserving safe API validation errors, request IDs and rate-limit response headers.
 
+The `/login` page signs drivers in and `/account` is protected by route middleware. Nuxt proxies the CSRF handshake, login, current-account and logout calls while forwarding Laravel's opaque HTTP-only session cookie. Authentication state explicitly represents loading, signed-in, signed-out, expired and unavailable sessions.
+
 For the complete stack, use Docker Compose from the repository root.
