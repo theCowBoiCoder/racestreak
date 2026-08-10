@@ -88,6 +88,8 @@ The standard helper commands rebuild the test images before every run, so tests 
 
 Run `.\scripts\dev.ps1 quality` on Windows or `./scripts/dev.sh quality` on macOS/Linux before publishing code. See [Code quality](docs/code-quality.md) for the enforced standards and automatic fixes.
 
+Every pull request and push to `main` is also checked automatically by GitHub Actions. The pipeline validates backend and frontend quality, tests, PostgreSQL migrations and the production Nuxt build. See [Continuous integration](docs/ci.md) for the required checks and troubleshooting guidance.
+
 ## Configuration
 
 Docker Compose supplies safe local defaults. Copy the root `.env.example` to `.env` only when you need to override the database password or forwarded port. When running either application outside Docker, copy its own `.env.example` and adjust it locally.
