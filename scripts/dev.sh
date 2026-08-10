@@ -35,6 +35,7 @@ case "$command_name" in
         docker compose ps
         ;;
     test)
+        docker compose --profile tools build backend-test frontend-test
         docker compose --profile tools run --rm backend-test
         docker compose --profile tools run --rm frontend-test
         ;;

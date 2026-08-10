@@ -78,9 +78,12 @@ The checked-in database password is a local-only Docker default. Set `DB_PASSWOR
 ## Run tests directly
 
 ```sh
+docker compose --profile tools build backend-test frontend-test
 docker compose --profile tools run --rm backend-test
 docker compose --profile tools run --rm frontend-test
 ```
+
+The standard helper commands rebuild the test images before every run, so tests always execute the current checkout. See [Automated testing](docs/testing.md) for test types, isolation rules, fixtures and contribution expectations.
 
 ## Configuration
 

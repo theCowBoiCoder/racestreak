@@ -49,6 +49,7 @@ try {
             Invoke-Compose -Arguments @('ps')
         }
         'test' {
+            Invoke-Compose -Arguments @('--profile', 'tools', 'build', 'backend-test', 'frontend-test')
             Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'backend-test')
             Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'frontend-test')
         }
