@@ -38,4 +38,45 @@ class ErrorResponseTest extends TestCase
                 ],
             ]);
     }
+
+    public function test_unsupported_methods_return_the_standard_error_format(): void
+    {
+        $this->postJson('/api/v1/health')
+            ->assertMethodNotAllowed()
+            ->assertExactJson([
+                'success' => false,
+                'error' => [
+                    'code' => 'METHOD_NOT_ALLOWED',
+                    'message' => 'The requested method is not allowed.',
+                ],
+            ]);
+    }
+
+    public function test_validation_errors_return_field_details_in_the_standard_format(): void
+    {
+        Route::post('/api/v1/test-validation', static function (): array {
+            request()->validate([
+                'driver_name' => ['required', 'string'],
+            ]);
+
+            return [];
+        });
+
+        $this->postJson('/api/v1/test-validation')
+            ->assertUnprocessable()
+            ->assertExactJson([
+                'success' => false,
+                'error' => [
+                    'code' => 'VALIDATION_ERROR',
+                    'message' => 'The request could not be validated.',
+                    'details' => [
+                        'fields' => [
+                            'driver_name' => [
+                                'The driver name field is required.',
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+    }
 }
