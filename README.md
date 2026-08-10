@@ -9,6 +9,16 @@ This repository contains the RaceStreak platform foundation:
 - PostgreSQL database
 - Docker Compose stack for consistent local execution
 
+## Developer documentation
+
+New contributors should begin with the [getting started guide](docs/getting-started.md). It covers a clean-clone setup, configuration, service verification and the normal development workflow.
+
+- [Documentation index](docs/README.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [Command reference](docs/commands.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Architecture and decision records](docs/architecture/README.md)
+
 ## Prerequisites
 
 - Docker Desktop with Docker Compose
@@ -125,4 +135,4 @@ Failed API responses:
 }
 ```
 
-PF-001 deliberately excludes authentication, product database entities, integrations, XP, challenges, rewards and deployment automation.
+The current repository is the platform foundation. Product modules such as authentication, integrations, XP, challenges and rewards are introduced through their own tracked work rather than bundled into foundation changes.
