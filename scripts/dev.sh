@@ -39,11 +39,16 @@ case "$command_name" in
         docker compose --profile tools run --rm backend-test
         docker compose --profile tools run --rm frontend-test
         ;;
+    quality)
+        docker compose --profile tools build backend-test frontend-test
+        docker compose --profile tools run --rm backend-test sh -lc './vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G'
+        docker compose --profile tools run --rm frontend-test npm run quality
+        ;;
     logs)
         docker compose logs --follow backend frontend database
         ;;
     *)
-        echo "Usage: $0 {start|stop|reset|status|test|logs} [--yes]" >&2
+        echo "Usage: $0 {start|stop|reset|status|test|quality|logs} [--yes]" >&2
         exit 1
         ;;
 esac

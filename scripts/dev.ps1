@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('start', 'stop', 'reset', 'status', 'test', 'logs')]
+    [ValidateSet('start', 'stop', 'reset', 'status', 'test', 'quality', 'logs')]
     [string] $Command = 'start',
     [switch] $Force
 )
@@ -52,6 +52,11 @@ try {
             Invoke-Compose -Arguments @('--profile', 'tools', 'build', 'backend-test', 'frontend-test')
             Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'backend-test')
             Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'frontend-test')
+        }
+        'quality' {
+            Invoke-Compose -Arguments @('--profile', 'tools', 'build', 'backend-test', 'frontend-test')
+            Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'backend-test', 'sh', '-lc', './vendor/bin/pint --test && ./vendor/bin/phpstan analyse --memory-limit=1G')
+            Invoke-Compose -Arguments @('--profile', 'tools', 'run', '--rm', 'frontend-test', 'npm', 'run', 'quality')
         }
         'logs' {
             Invoke-Compose -Arguments @('logs', '--follow', 'backend', 'frontend', 'database')

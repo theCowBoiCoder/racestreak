@@ -44,6 +44,7 @@ The first start builds every image, creates PostgreSQL, runs pending migrations 
 | Show service status | `.\scripts\dev.ps1 status` | `./scripts/dev.sh status` |
 | Follow service logs | `.\scripts\dev.ps1 logs` | `./scripts/dev.sh logs` |
 | Run all tests | `.\scripts\dev.ps1 test` | `./scripts/dev.sh test` |
+| Run all quality checks | `.\scripts\dev.ps1 quality` | `./scripts/dev.sh quality` |
 | Stop services | `.\scripts\dev.ps1 stop` | `./scripts/dev.sh stop` |
 | Delete local data and start fresh | `.\scripts\dev.ps1 reset -Force` | `./scripts/dev.sh reset --yes` |
 
@@ -84,6 +85,8 @@ docker compose --profile tools run --rm frontend-test
 ```
 
 The standard helper commands rebuild the test images before every run, so tests always execute the current checkout. See [Automated testing](docs/testing.md) for test types, isolation rules, fixtures and contribution expectations.
+
+Run `.\scripts\dev.ps1 quality` on Windows or `./scripts/dev.sh quality` on macOS/Linux before publishing code. See [Code quality](docs/code-quality.md) for the enforced standards and automatic fixes.
 
 ## Configuration
 

@@ -5,11 +5,7 @@ const { data: health, error, status, refresh } = useBackendHealth()
 </script>
 
 <template>
-  <div
-    class="status"
-    :class="{ healthy: health?.success, unhealthy: error }"
-    aria-live="polite"
-  >
+  <div class="status" :class="{ healthy: health?.success, unhealthy: error }" aria-live="polite">
     <span class="indicator" aria-hidden="true" />
     <div>
       <strong v-if="status === 'pending'">Checking the API…</strong>
@@ -32,15 +28,41 @@ const { data: health, error, status, refresh } = useBackendHealth()
   gap: 1rem;
   align-items: center;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  background: rgba(255,255,255,.035);
+  background: rgba(255, 255, 255, 0.035);
 }
 
-.indicator { width: .8rem; height: .8rem; flex: 0 0 auto; border-radius: 50%; background: #f6b73c; box-shadow: 0 0 1rem currentColor; }
-.healthy .indicator { color: #31d17c; background: currentColor; }
-.unhealthy .indicator { color: #ff5b5b; background: currentColor; }
-.status p { margin: .25rem 0 0; color: #8e96a8; }
+.indicator {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #f6b73c;
+  box-shadow: 0 0 1rem currentColor;
+}
+.healthy .indicator {
+  color: #31d17c;
+  background: currentColor;
+}
+.unhealthy .indicator {
+  color: #ff5b5b;
+  background: currentColor;
+}
+.status p {
+  margin: 0.25rem 0 0;
+  color: #8e96a8;
+}
 
-button { margin-top: 1rem; border: 0; border-radius: .7rem; padding: .75rem 1rem; background: #ff6647; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+button {
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  background: #ff6647;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
 </style>
