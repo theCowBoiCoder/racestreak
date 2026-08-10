@@ -16,7 +16,7 @@ The `Backend` job:
 2. installs PHP 8.4 and Composer dependencies;
 3. checks Laravel formatting with Pint;
 4. runs Larastan static analysis;
-5. runs the backend automated tests; and
+5. runs the backend automated tests with an isolated in-memory SQLite database; and
 6. applies, rolls back and reapplies all migrations against PostgreSQL.
 
 Composer's download cache is reused between runs. The installed `vendor` directory is deliberately recreated from `composer.lock` on every run.
