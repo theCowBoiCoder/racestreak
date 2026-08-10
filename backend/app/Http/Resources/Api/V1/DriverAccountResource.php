@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Http\Resources\Api\V1;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/** @mixin User */
+class DriverAccountResource extends JsonResource
+{
+    /**
+     * @return array<string, bool|string|null>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->public_id,
+            'display_name' => $this->name,
+            'email' => $this->email,
+            'email_verified' => $this->email_verified_at !== null,
+            'created_at' => $this->created_at?->utc()->format('Y-m-d\\TH:i:s\\Z'),
+        ];
+    }
+}
