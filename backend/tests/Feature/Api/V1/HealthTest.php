@@ -10,6 +10,7 @@ class HealthTest extends TestCase
     {
         $this->getJson('/api/v1/health')
             ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
             ->assertExactJson([
                 'success' => true,
                 'data' => [

@@ -88,7 +88,11 @@ Docker Compose supplies safe local defaults. Copy the root `.env.example` to `.e
 
 Laravel validates `APP_NAME`, `APP_VERSION`, `APP_TIMEZONE` and `APP_URL` during startup. Missing values produce a configuration error naming the missing variable without displaying secret values.
 
-## Initial API format
+## API standards
+
+All `/api/v1` endpoints follow the versioned [RaceStreak API v1 standards](docs/api/v1/standards.md). The contract covers naming, HTTP semantics, response and validation formats, pagination, timestamps, identifiers, authentication, request IDs and rate limiting. It also includes a checklist for every new endpoint.
+
+### Response summary
 
 Successful responses:
 
