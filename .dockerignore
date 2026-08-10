@@ -3,6 +3,7 @@
 backend/.env
 backend/vendor
 backend/node_modules
+backend/storage/framework/cache/phpstan
 frontend/.env
 frontend/node_modules
 frontend/.nuxt

@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { ref } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
+
 import HealthStatus from '../../app/components/HealthStatus.vue'
 import { healthyBackendResponse } from '../fixtures/backendHealth'
 
